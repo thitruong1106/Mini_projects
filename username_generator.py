@@ -1,3 +1,10 @@
+"""
+Future Works 
+    - Create a unique username generator for companies. 
+    - Ask for first name, last name 
+    - Generate a unique username and add it to a jsonl. 
+    - Data base of username, matching to the first and last 
+"""
 import random, string 
 
 symbols = string.punctuation #Get a list of symbols 
