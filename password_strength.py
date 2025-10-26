@@ -31,7 +31,9 @@ print(f"Your password contains {sym_counter} this many symbol")
 #check the most specific condition first, 
 if no_counter > 1 and sym_counter > 1 and length > 8: #if password contains 1 digit and 1 speical charcter and over 8 length 
     print("Strongest password")
-elif length > 8 and no_counter > 1:
+elif len(password) > 8 and no_counter > 1:
     print("Moderate pass")
 elif length < 8:
     print("Weak password")
+else:
+    print("Weak")
