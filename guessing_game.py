@@ -18,6 +18,6 @@ while True:
         print("Try again")
         count += 1 #add one to counter 
     elif guess == random_no: #guess is correct 
-        print(f"You attempt {count} times")
+        print(f"You got it in {count} times")
         print(f"The number picked randomly was {random_no}")
         break

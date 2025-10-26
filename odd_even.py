@@ -20,7 +20,7 @@ while True:
     else:
         print("Odd")
     choice = input("Type q to quit, else continue").lower()
-    if choice.strip() == "q":
+    if choice.strip().lower() == "q":
         print("Goodbye")
         break
     

@@ -1,3 +1,4 @@
-Item,Cost
-Tea,2.5
-biscuit,4.0
+Timestamp,Item,Cost
+2025-10-27 00:59:19,phone bill,40.0
+2025-10-27 00:59:23,coffee,3.5
+2025-10-27 00:59:27,tea,3.0
