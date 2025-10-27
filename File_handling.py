@@ -1,8 +1,15 @@
+"""
+The purpose of this script is to scan a given folder and categorize these files according to their extension. 
+Two modes have been added(1.Dry Run, 2.execution)
+    1. Dry runs allows preview of what would happen, listing where the files will go, if the program is to be executed. 
+    2. Move files to organised folders
+"""
+
 import os 
 import shutil 
 
 #gloab
-FOLDER_PATH = "C:/Users/username/Downloads"
+FOLDER_PATH = "C:/Users/testuser/Downloads"
 def display_menu():
     print("Welcome to the file organiser 📂")
     print("1.Dry run \n2.Move Files \n3.Quit")
@@ -36,21 +43,16 @@ def organise_files(dry_run=True):
         for folder, extension in file_types.items(): #for folder, and extension in filetypes
             if ext in extension: #if ext matches extension 
                 target_folder = os.path.join(folder_path,folder) #Create path for folder
-                destination = os.path.join(target_folder, filename) #Get destination path
                 if dry_run: #If dry run is True 
-                    print(f"{filename}") 
-                    print(f"{file_path}")
-                    print(f"{destination}")
+                    print(f"{filename} -> {folder}/")
                     #if no folder exists 
                     if not os.path.exists(target_folder):
-                        print(f"Will create folder: {target_folder}")
                         if target_folder not in folder_created:
                             folder_created.append(target_folder)
-                    print(f"Would move to {folder}/")
                 else:
                     os.makedirs(target_folder, exist_ok=True) #create folder if its non-existance, exist_ok prevents error if folder exists
                     shutil.move(file_path, os.path.join(target_folder,filename)) #Move file from original location to target 
-                    print(f"Moved: {filename} to {folder}")
+                    print(f"{filename} Moved to -> {folder}/")
                 files_to_move += 1
                 moved = True 
                 break 
