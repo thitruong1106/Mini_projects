@@ -1,20 +1,24 @@
 import os 
 import shutil 
 
+#gloab
+FOLDER_PATH = "C:/Users/username/Downloads"
 def display_menu():
     print("Welcome to the file organiser 📂")
     print("1.Dry run \n2.Move Files \n3.Quit")
 
 def organise_files(dry_run=True):
     #Specify which folder to organise
-    folder_path = "C:/Users/thitr/Downloads"
+    folder_path = FOLDER_PATH
     #Dictionary mapping folder names, to file extension they should contain
     file_types = {
         "Images": [".png", ".jpg", ".jpeg", ".gif"],
         "Music": [".mp3", ".wav"],
-        "Document": [".pdf"],
+        "Document": [".pdf", ".doc", ".docx", ".txt"],
         "Installation": [".exe"],
-        "BambuA1": [".3mf"]
+        "BambuA1": [".3mf"],
+        "Zip": [".zip", ".rar"],
+        "Sheets": [".csv", ".xlsx", ".xls"]
     }
     print(f"\n {'Dry Run' if dry_run else 'Executing'} - Scanning {folder_path}")
     files_processed = 0 
@@ -42,7 +46,7 @@ def organise_files(dry_run=True):
                         print(f"Will create folder: {target_folder}")
                         if target_folder not in folder_created:
                             folder_created.append(target_folder)
-                    print("Would move to {folder}/")
+                    print(f"Would move to {folder}/")
                 else:
                     os.makedirs(target_folder, exist_ok=True) #create folder if its non-existance, exist_ok prevents error if folder exists
                     shutil.move(file_path, os.path.join(target_folder,filename)) #Move file from original location to target 
@@ -57,7 +61,7 @@ def organise_files(dry_run=True):
     print("Summary")
     print(f"Files scanned: {files_processed}")
     print(f"Files {'to move' if dry_run else 'moved'}: {files_to_move}")
-    print(f"Folder {'to create' if dry_run else 'created'}: {len(folder_created)}")
+    print(f"Folder {'to create' if dry_run else 'created'}: {len(set(folder_created))}")
 
     if dry_run and files_to_move == 0:
         print("No files need organisation - everything has been sorted")
@@ -67,26 +71,26 @@ def organise_files(dry_run=True):
     input("\n Press enter to continue")
 
 def main():
-    folder_path = "C:/Users/thitr/Downloads"
+    folder_path = FOLDER_PATH
     #Error handling if path is valid 
     if not os.path.exists(folder_path):
         print(f"Error: Folder has not been found {folder_path}")
         print(f"Update the folder_path variable in code")
         return
     while True: 
-        display_menu()
+        display_menu() #print menu
         try:
             choice = input("Enter your choice (1-3)").strip()
             if choice == "1":
                 #dry run 
                 organise_files(dry_run=True)
-            elif choice == "2":
+            elif choice == "2": #excution
                 print("⚠️Do you want to proceed with moving your files⚠️")
                 confirm = input("Are you sure you want to continue (y/n)?").strip().lower()
                 if confirm == "y":
-                    organise_files(dry_run=False)
+                    organise_files(dry_run=False) #set defualt dry_run to false to execute
                     print("Organisation completed")
-                else: #in case of failer 
+                else: #in case of failure
                     print("Error has occured. Operation has not been completed")
             elif choice == "3":
                 print("Thank you for using file organiser! Goodbye!")
