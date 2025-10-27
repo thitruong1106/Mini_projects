@@ -60,16 +60,16 @@ def generate_report(path, period_choice):
                 if timestamp >= week_start.replace(hour=0, minute=0, second=0, microsecond=0):
                     count += 1 
                     total_cost += item_cost
-                elif period_choice == "3":
-                    count += 1 
-                    total_cost += item_cost
+            elif period_choice == "3":
+                count += 1 
+                total_cost += item_cost
     #display results based on period 
     period_names = {"1" : "Today", "2":"This Week", "3": "All Time"}
     period_name = period_names.get(period_choice, "all time")
 
     print(f"Report for {period_name}:")
     print(f"Items: {count}")
-    print(f"Total Cost: {total_cost}")
+    print(f"Total Cost: {total_cost:.2f}")
 
 path = "expense.csv"
 while True:
