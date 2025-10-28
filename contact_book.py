@@ -8,18 +8,25 @@ CONTACT_FILE = "contacts.json"
 #Helper function 
 
 def load_contacts():
-    if os.path.exists(CONTACT_FILE): #If file exisit 
-        with open(CONTACT_FILE, 'r', newline="", encoding="utf-8") as f: #Read 
-            return json.load(f)
-        #handle cases where file is empty 
+    if not os.path.exists(CONTACT_FILE):
+        return [] #if file does not exists, start fresh
+    try:
+        with open(CONTACT_FILE, 'r', encoding="utf-8") as f: #Read 
+           data = json.load(f)
+           if isinstance(data, list):
+               return data
+           elif isinstance(data, dict):
+               #[{"name":..., ...}, ...]
+               return [{"name": k, **v} for k, v in data.items()]
         return []
-    #Return Empty list if file doesnt exists 
-    return []
+    except (json.JSONDecodeError, OSError):
+        print("contacts.json is empty of invalid. Starting a new file")
+        return []
     
 def save_contacts(contacts):
     #Save a new contact 
-    with open(CONTACT_FILE, 'w') as f:
-        json.dump(contacts, f, indent=4) #dump contact to file
+    with open(CONTACT_FILE, 'w', encoding="utf-8") as f:
+        json.dump(contacts, f, indent=4, ensure_ascii=False) #dump contact to file
 
 def view_contacts(contacts): 
     #view all saved contacts 
@@ -46,37 +53,27 @@ def search_contact(contacts):
 def delete_contacts(contacts):
     "Delete by name"
     name = input("Enter the name of the contact to be deleted: \t").strip()
-    found = False
-    for c in contacts: 
+    for i,c in enumerate(contacts): 
         if c['name'].lower() == name.lower(): #if contact name matches input
-            contacts.remove(c)
-            save_contacts(contacts)
-            print(f"{name} contact has been removed succesfully.")
-            found = True 
-            break
-    if not found:
-        print("Contact is not Found.")
+            if input(f"Delete {c['name']} ? Y/n").strip().lower() == "y":
+                contacts.pop(i)
+                save_contacts(contacts)
+                print(f"{name} contact has been removed succesfully.")
+            else:
+                print("Cancelled")
+            return
+    print("Contact not found")
 
 def validate_name(name):
-    name_re = r"^[A-Za-zÀ-ÿ]+([ '-][A-Za-zÀ-ÿ]+)*$"
-    if re.match(name_re, name):
-        return True
-    else:
-        return False
+    return bool(re.fullmatch(r"[A-Za-zÀ-ÿ]+([ '\-][A-Za-zÀ-ÿ]+)*", name))
+
     
 def validate_email(email):
-    email_re = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if re.match(email_re, email):
-        return True
-    else:
-        return False
+    return bool(re.fullmatch(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email))
     
 def validate_phone(phone):
-    phone_re = r'^04[-\s]?\d{2}[-\s]?\d{2}[-\s]?\d{2}[-\s]?\d{2}$' #allow spaces / dashes 
-    if re.match(phone_re, phone):
-        return True
-    else:
-        return False
+    digits = re.sub(r"\D", "", phone)
+    return digits.startswith("04") and len(digits) == 10
 
 def add_contacts(contacts):
     "Add new entry into json file"
