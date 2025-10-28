@@ -12,7 +12,10 @@ def load_contacts():
     if os.path.exists(CONTACT_FILE): #If file exisit 
         with open(CONTACT_FILE, 'r', newline="", encoding="utf-8") as f: #Read 
             return json.load(f)
+        #handle cases where file is empty 
         return []
+    #Return Empty list if file doesnt exists 
+    return []
     
 def save_contacts(contacts):
     #Save a new contact 
@@ -52,7 +55,7 @@ def delete_contacts(contacts):
     "Delete by name"
     name = input("Enter the name of the contact to be deleted: \t").strip()
     for c in contacts: 
-        if c[name].lower() == name.lower(): #if contact name matches input
+        if c['name'].lower() == name.lower(): #if contact name matches input
             contacts.remove(c)
             save_contacts(contacts)
             print(f"{name} contact has been removed succesfully.")
