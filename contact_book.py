@@ -29,7 +29,7 @@ def view_contacts(contacts):
     print("\n Contact List:")
     for idx, contact in enumerate (contacts, start=1):
         print(f"{idx}, {contact['name']} - {contact['phone']} - {contact['email']}")
-        print()
+    print()
 
 
 def search_contact(contacts):
@@ -40,8 +40,8 @@ def search_contact(contacts):
         print("\nSearch Results:")
         for c in results:
             print(f"- {c['name']} | {c['phone']} | {c['email']}")
-        else:
-            print("No contact has been found")
+    else:
+        print("No contact has been found")
 
 def delete_contacts(contacts):
     "Delete by name"
@@ -52,9 +52,11 @@ def delete_contacts(contacts):
             contacts.remove(c)
             save_contacts(contacts)
             print(f"{name} contact has been removed succesfully.")
-            return 
-        if not found:
-            print("Contact is not Found.")
+            found = True 
+            break
+    if not found:
+        print("Contact is not Found.")
+
 def validate_name(name):
     name_re = r"^[A-Za-zÀ-ÿ]+([ '-][A-Za-zÀ-ÿ]+)*$"
     if re.match(name_re, name):
@@ -103,11 +105,11 @@ def add_contacts(contacts):
     print(f"Contact {name} added successfully.")
 
 def main():
-    contact = load_contacts()
+    contacts = load_contacts()
     try:
         while True:
             print("Welcome to Contact Book")
-            print("1. Load Contact")
+            print("1. View Contact")
             print("2. Add contact")
             print("3. Search Contact")
             print("4. Delete Contact")
@@ -115,14 +117,15 @@ def main():
 
             choice = input("Choose option (1 - 5)")
             if choice == "1":
-                view_contacts(contact)
+                view_contacts(contacts)
             elif choice == "2":
-                add_contacts(contact)
+                add_contacts(contacts)
             elif choice == "3":
-                search_contact(contact)
+                search_contact(contacts)
             elif choice == "4":
-                delete_contacts(contact)
+                delete_contacts(contacts)
             elif choice == "5":
+                print("Exiting.....")
                 break
             else:
                 print("Invalid input, Enter a valid choice (1 - 5)")
