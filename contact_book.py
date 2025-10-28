@@ -1,8 +1,7 @@
 """
 Purpose: Build a CLI to store, search, list and delete contacts in a JSON file. 
 """
-import json
-import os 
+import json,re,os
 
 CONTACT_FILE = "contacts.json"
 
@@ -32,13 +31,6 @@ def view_contacts(contacts):
         print(f"{idx}, {contact['name']} - {contact['phone']} - {contact['email']}")
         print()
 
-def add_contacts(contacts):
-    "Add new entry into json file"
-    name = input("Enter the name: \t").strip()
-    phone = input("Enter a phone number: \t").strip()
-    email = input("Enter an email: \t").strip()
-    contacts.append({"name": name, "phone": phone, "email": email})
-    print(f"Contact {name} added successfully.")
 
 def search_contact(contacts):
     "Search contact by keyword NAME"
@@ -54,37 +46,88 @@ def search_contact(contacts):
 def delete_contacts(contacts):
     "Delete by name"
     name = input("Enter the name of the contact to be deleted: \t").strip()
+    found = False
     for c in contacts: 
         if c['name'].lower() == name.lower(): #if contact name matches input
             contacts.remove(c)
             save_contacts(contacts)
             print(f"{name} contact has been removed succesfully.")
             return 
-        print("Contact is not Found.")
+        if not found:
+            print("Contact is not Found.")
+def validate_name(name):
+    name_re = r"^[A-Za-zÀ-ÿ]+([ '-][A-Za-zÀ-ÿ]+)*$"
+    if re.match(name_re, name):
+        return True
+    else:
+        return False
+    
+def validate_email(email):
+    email_re = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_re, email):
+        return True
+    else:
+        return False
+    
+def validate_phone(phone):
+    phone_re = r'^04[-\s]?\d{2}[-\s]?\d{2}[-\s]?\d{2}[-\s]?\d{2}$' #allow spaces / dashes 
+    if re.match(phone_re, phone):
+        return True
+    else:
+        return False
+
+def add_contacts(contacts):
+    "Add new entry into json file"
+    while True:
+        name = input("Enter the name: \t").strip()
+        if validate_name(name):
+            break
+        else:
+            print("Invalid name, Only use letters, spaces and hyphens")
+    
+    while True: 
+        phone = input("Enter a phone number: \t").strip()
+        if validate_phone(phone):
+            break
+        else:
+            print("Invalid phone format. Must be 04 followed by 8 digits (AUS)")
+
+    while True:
+        email = input("Enter an email: \t").strip()
+        if validate_email(email):
+            break
+        else:
+            print("Invalid email. Please enter a valid email addres")
+    contacts.append({"name": name, "phone": phone, "email": email})
+    save_contacts(contacts)
+    print(f"Contact {name} added successfully.")
 
 def main():
     contact = load_contacts()
-    while True:
-        print("Welcome to Contact Book")
-        print("1. Load Contact")
-        print("2. Add contact")
-        print("3. Search Contact")
-        print("4. Delete Contact")
-        print("5. Exit")
+    try:
+        while True:
+            print("Welcome to Contact Book")
+            print("1. Load Contact")
+            print("2. Add contact")
+            print("3. Search Contact")
+            print("4. Delete Contact")
+            print("5. Exit")
 
-        choice = input("Choose option (1 - 5)")
-        if choice == "1":
-            view_contacts(contact)
-        elif choice == "2":
-            add_contacts(contact)
-        elif choice == "3":
-            search_contact(contact)
-        elif choice == "4":
-            delete_contacts(contact)
-        elif choice == "5":
-            break
-        else:
-            print("Invalid input, Enter a valid choice (1 - 5)")
+            choice = input("Choose option (1 - 5)")
+            if choice == "1":
+                view_contacts(contact)
+            elif choice == "2":
+                add_contacts(contact)
+            elif choice == "3":
+                search_contact(contact)
+            elif choice == "4":
+                delete_contacts(contact)
+            elif choice == "5":
+                break
+            else:
+                print("Invalid input, Enter a valid choice (1 - 5)")
+    except KeyboardInterrupt:
+        print("Program has been terminated by user")
 
 if __name__ == "__main__":
     main()
