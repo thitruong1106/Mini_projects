@@ -3,7 +3,7 @@ from tasks import add_task, list_task, mark_done, delete_tasks
 PATH = "tasks.json"
 
 def show_menu(): 
-    print("1.Add Tasks \n 2.List Tasks \n 3.Mark Done \n 4.Delete Tasks \n 5.Quit")
+    print(" 1.Add Tasks \n 2.List Tasks \n 3.Mark Done \n 4.Delete Tasks \n 5.Quit")
 
 def prompt_priority():
     while True:
@@ -27,7 +27,7 @@ def run():
         elif choice == "2":
             tasks = list_task(PATH)
             if not tasks: #if empty 
-                print("No tasks")
+                print("❌ No tasks")
             else: #if there task
                 for i,t in enumerate(tasks):
                     print(f"{i:>2} | {t['status']:<7} | {t['priority']:<8} | {t['title']}")
