@@ -67,7 +67,6 @@ def delete_contacts(contacts):
 def validate_name(name):
     return bool(re.fullmatch(r"[A-Za-zÀ-ÿ]+([ '\-][A-Za-zÀ-ÿ]+)*", name))
 
-    
 def validate_email(email):
     return bool(re.fullmatch(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email))
     
