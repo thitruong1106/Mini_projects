@@ -1,47 +1,89 @@
-import json 
+import json
+import os
 
-title = input("Enter movie name: ")
-year = input("Enter year of movie")
+MOVIES_FILE = "movies.json"
 
-movie = [] #load exisiting movies or create empty list 
+def load_movies():
+    """Load movies from JSON file"""
+    if os.path.exists(MOVIES_FILE):
+        try:
+            with open(MOVIES_FILE, 'r') as file:
+                return json.load(file)
+        except (json.JSONDecodeError, FileNotFoundError):
+            return []
+    return []
 
+def save_movies(movies):
+    """Save movies to JSON file"""
+    with open(MOVIES_FILE, 'w') as file:
+        json.dump(movies, file, indent=2)
 
-new_movie = {
-    "name": title, 
-    "year": year, 
-    "watched": False
-}
-movie.append(new_movie)
+def add_movie(movies):
+    print("\n Adding a movie...")
+    
+    title = input("Enter movie title: ").strip()
+    if not title:
+        print("Title cannot be empty!")
+        return movies
+    
+    year = input("Enter movie year: ").strip()
+    if not year.isdigit():
+        print("Year must be a number!")
+        return movies
+    
+    movie = {
+        "title": title,
+        "year": int(year),
+        "watched": False
+    }
+    
+    movies.append(movie)
+    save_movies(movies)
+    print(f"✅ '{title}' ({year}) added successfully!")
+    return movies
 
-with open('movietest.json', 'w', encoding='utf-8') as file:
-    json.dump(movie, file, indent=4, ensure_ascii=False)
+def list_movies(movies):
+    """List all movies with their status"""
+    print("\n--- All Movies ---")
+    
+    if not movies:
+        print("No movies in your list yet.")
+        return
+    
+    for index, movie in enumerate(movies, 1):
+        status = "✅ watched" if movie["watched"] else "❌ not watched"
+        print(f"{index}. {movie['title']} ({movie['year']}) - {status}")
 
-#confirm the above stores input into json file 
+def mark_as_watched(movies):
+    """Mark a movie as watched by index"""
+    print("\n--- Mark as Watched ---")
+    
+    if not movies:
+        print("No movies in your list yet.")
+        return movies
+    
+    list_movies(movies)
+    
+    try:
+        index = int(input("\nEnter the number of the movie to mark as watched: "))
+        if 1 <= index <= len(movies):
+            movies[index-1]["watched"] = True
+            save_movies(movies)
+            print(f"✅ '{movies[index-1]['title']}' marked as watched!")
+        else:
+            print("Invalid movie number!")
+    except ValueError:
+        print("Please enter a valid number!")
+    
+    return movies
 
-#now to print all movies / LIST MOVIES 
+def display_menu():
+    """Display the main menu"""
+    print("🎬 MOVIE TRACKER")
+    print("="*40)
+    print("1. Add a movie")
+    print("2. List all movies")
+    print("3. Mark as watched")
+    print("4. Quit")
+    print("="*40)
 
-with open('movietest.json', 'r', encoding='utf-8') as file: 
-    loaded_data =json.load(file)
-
-print(loaded_data)
-#Get name of movie, enter name, if name matches table change to true 
-query = input("Search a movie: ").strip().lower()
-
-found = False 
-for movie in loaded_data: 
-    if movie['name'].lower() == query: 
-        movie['watched'] = True #change status to true 
-        print(f"Marked {movie['name']} as watched")
-        found = True 
-        break 
-
-if not found: 
-    print("Movie not found")
-
-#saved the updaed data 
-with open('movietest.json', 'w', encoding='utf-8') as file: 
-    json.dump(loaded_data, file, indent=4, ensure_ascii=False)
-
-#print updated 
-for movie in loaded_data: 
-    print(f"Name: {movie['name']}, Year: {movie['year']}, Watched: {movie['watched']}")
